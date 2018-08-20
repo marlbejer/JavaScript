@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax Request</title>
+    <style>
+        h2 {
+            color: lightseagreen;
+        }
+        table {
+            border-spacing: 0;
+        }
+        thead > tr > th {
+            background-color: blue;
+            font: bold 1.3em Consolas;
+            padding: .5em 0;
+            width: 250px;
+            height: 40px;
+        }
+        td {    
+            margin: 0;
+            padding: 0 1.3em;
+            font-size: 1.3em;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            text-align: center;
+        }
+        
+        tbody > tr:nth-child(even) {
+            background-color: silver;
+        }
+    </style>
+</head>
+<body>
+    <h2>This is XMLHttpRequest - JavaScript</h2>
+    <div class="table">
+        <table class="table-content">
+            <thead>
+                <tr>
+                    <th>No#</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        let $tbody = document.querySelector('.table-content > tbody');
+
+        //console.log(document.querySelector('.table-content > thead > tr > th').innerHTML);
+
+        function readProfiles() {
+            let xhr = new XMLHttpRequest();
+            
+            xhr.onreadystatechange = () => {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    try {
+                        let result = JSON.parse(xhr.responseText);
+                        loadResult(result);
+                    } catch (error) { console.warn('File Not Found!'); }
+                }
+            }
+            xhr.open('get', 'json.json', true);
+            xhr.send();
+
+            //////////////////////////////////////////////////
+            //////////// THIS IS OTHER APPROACH //////////////
+            //////////////////////////////////////////////////
+
+            // xhr.open('get', 'json.json', true);
+            // xhr.onload = () => {
+            //     try {
+            //         let result = JSON.parse(xhr.responseText);
+            //         loadResult(result);
+            //     } catch (e) { console.warn('File Not Found!'); }
+            // }
+            // xhr.send();
+        }
+
+        function loadResult(result) {
+            while ($tbody.firstChild) {
+                $tbody.removeChild($tbody.firstChild);
+            }
+            result.forEach((row) => {
+                let tr = document.createElement("tr");
+                row.forEach((e) => {
+                    let cell = document.createElement("td");
+                    cell.textContent = e;
+                    tr.appendChild(cell);
+                });
+                $tbody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => { readProfiles(); });
+    </script>
+</body>
+</html>
